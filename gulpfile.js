@@ -7,6 +7,8 @@ var ngrok = require('ngrok');
 var psi = require('psi');
 var site = '';
 var portVal = 8000;
+var imageResize = require('gulp-image-resize');
+var rename = require('gulp-rename');
 
 gulp.task('serve', function() {
 	browserSync({
@@ -45,6 +47,7 @@ gulp.task('psi-mobile', function(cb) {
 
 gulp.task('psi-seq', function(cb) {
 	return sequence(
+		'images',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -55,6 +58,7 @@ gulp.task('psi-seq', function(cb) {
 
 gulp.task('psi-desktop-seq', function(cb) {
 	return sequence(
+		'images',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -64,15 +68,40 @@ gulp.task('psi-desktop-seq', function(cb) {
 
 gulp.task('psi-mobile-seq', function(cb) {
 	return sequence(
+		'images',
 		'serve',
 		'ngrok-url',
-		'psi-mobile',--
+		'psi-mobile',
 		cb
 	);
 });
 
-gulp.task('psi', ['psi-seq'], function() {
-	process.exit();
+
+gulp.task('images', function() {
+	return [
+		gulp.src('img/profilepic.jpg')
+		.pipe(imageResize({
+			quality: 0.7,
+			imageMagick: true
+		}))
+		.pipe(gulp.dest('img/auto')),
+
+		gulp.src('views/images/pizzeria.jpg')
+			.pipe(imageResize({
+				quality: 0.7,
+				imageMagick: true
+			}))
+			.pipe(gulp.dest('views/images/auto')),
+
+		gulp.src('views/images/pizzeria.jpg')
+			.pipe(imageResize({
+				quality: 0.7,
+				width: 100,
+				imageMagick: true
+			}))
+			.pipe(rename(function(path) { path.basename += '-100w'}))
+			.pipe(gulp.dest('views/images/auto'))
+	];
 });
 
 gulp.task('desktop', ['psi-desktop-seq'], function() {
@@ -83,7 +112,7 @@ gulp.task('mobile', ['psi-mobile-seq'], function() {
 	process.exit();
 });
 
-gulp.task('default', ['desktop'], function() {
-	console.log('starting')
+gulp.task('default', ['psi-seq'], function() {
+	process.exit();
 });
 

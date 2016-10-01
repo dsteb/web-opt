@@ -9,15 +9,21 @@ var site = '';
 var portVal = 8000;
 var imageResize = require('gulp-image-resize');
 var rename = require('gulp-rename');
+var inlineCss = require('gulp-inline-css');
 
 gulp.task('serve', function() {
 	browserSync({
 		port: portVal,
 		open: false,
 		server: {
-			baseDIr: ''
+			baseDIr: 'build'
 		}
 	});
+});
+
+gulp.task('copy', function() {
+	gulp.src(['./**/*', '!node_modules', '!node_modules/**', '!gulpfile.js', '!LICENSE', '!package.json'])
+		.pipe(gulp.dest('build'));
 });
 
 gulp.task('ngrok-url', function(cb) {
@@ -29,7 +35,7 @@ gulp.task('ngrok-url', function(cb) {
 });
 
 gulp.task('psi-desktop', function(cb) {
-	console.log('Start PageSpeed Insight with ' + site)
+	console.log('Start Desktop PageSpeed Insight with ' + site);
 	psi.output(site, {
 		nokey: 'true',
 		strategy: 'desktop',
@@ -38,6 +44,7 @@ gulp.task('psi-desktop', function(cb) {
 });
 
 gulp.task('psi-mobile', function(cb) {
+	console.log('Start Mobile PageSpeed Insight with ' + site);
 	psi.output(site, {
 		nokey: 'true',
 		strategy: 'mobile',
@@ -47,6 +54,7 @@ gulp.task('psi-mobile', function(cb) {
 
 gulp.task('psi-seq', function(cb) {
 	return sequence(
+		'copy',
 		'images',
 		'serve',
 		'ngrok-url',
@@ -58,6 +66,7 @@ gulp.task('psi-seq', function(cb) {
 
 gulp.task('psi-desktop-seq', function(cb) {
 	return sequence(
+		'copy',
 		'images',
 		'serve',
 		'ngrok-url',
@@ -68,6 +77,7 @@ gulp.task('psi-desktop-seq', function(cb) {
 
 gulp.task('psi-mobile-seq', function(cb) {
 	return sequence(
+		'copy',
 		'images',
 		'serve',
 		'ngrok-url',
@@ -79,19 +89,19 @@ gulp.task('psi-mobile-seq', function(cb) {
 
 gulp.task('images', function() {
 	return [
-		gulp.src('img/profilepic.jpg')
+		gulp.src('/img/profilepic.jpg')
 		.pipe(imageResize({
 			quality: 0.7,
 			imageMagick: true
 		}))
-		.pipe(gulp.dest('img/auto')),
+		.pipe(gulp.dest('build/img/')),
 
 		gulp.src('views/images/pizzeria.jpg')
 			.pipe(imageResize({
 				quality: 0.7,
 				imageMagick: true
 			}))
-			.pipe(gulp.dest('views/images/auto')),
+			.pipe(gulp.dest('build/views/images')),
 
 		gulp.src('views/images/pizzeria.jpg')
 			.pipe(imageResize({
@@ -100,7 +110,7 @@ gulp.task('images', function() {
 				imageMagick: true
 			}))
 			.pipe(rename(function(path) { path.basename += '-100w'}))
-			.pipe(gulp.dest('views/images/auto'))
+			.pipe(gulp.dest('build/views/images'))
 	];
 });
 

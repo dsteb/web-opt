@@ -1,0 +1,33 @@
+{
+  "name": "web-opt",
+  "version": "1.0.0",
+  "description": "Udacity Web Optimization Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsteb/web-opt.git"
+  },
+  "keywords": [
+    "Udacity",
+    "CRP",
+    "WebOpt",
+    "PageSpeedInsights"
+  ],
+  "author": "dsteb",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dsteb/web-opt/issues"
+  },
+  "homepage": "https://github.com/dsteb/web-opt#readme",
+  "devDependencies": {
+    "browser-sync": "^2.17.0",
+    "gulp": "^3.9.1",
+    "gulp-exit": "0.0.2",
+    "ngrok": "^2.2.3",
+    "psi": "^2.0.4",
+    "run-sequence": "^1.2.2"
+  }
+}

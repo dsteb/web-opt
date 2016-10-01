@@ -11,6 +11,7 @@ var imageResize = require('gulp-image-resize');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var fs = require('fs');
+var clean = require('gulp-clean');
 
 
 gulp.task('serve', function() {
@@ -21,6 +22,10 @@ gulp.task('serve', function() {
 			baseDir: 'build'
 		}
 	});
+});
+
+gulp.task('clean', function() {
+	return gulp.src('build', {read: false}).pipe(clean());
 });
 
 gulp.task('copy', function() {
@@ -68,6 +73,7 @@ gulp.task('psi-mobile', function(cb) {
 
 gulp.task('psi-seq', function(cb) {
 	return sequence(
+		'clean',
 		'copy',
 		'images',
 		'inline-css',
@@ -81,6 +87,7 @@ gulp.task('psi-seq', function(cb) {
 
 gulp.task('psi-desktop-seq', function(cb) {
 	return sequence(
+		'clean',
 		'copy',
 		'images',
 		'inline-css',
@@ -93,6 +100,7 @@ gulp.task('psi-desktop-seq', function(cb) {
 
 gulp.task('psi-mobile-seq', function(cb) {
 	return sequence(
+		'clean',
 		'copy',
 		'images',
 		'inline-css',

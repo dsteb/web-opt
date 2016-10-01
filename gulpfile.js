@@ -9,22 +9,36 @@ var site = '';
 var portVal = 8000;
 var imageResize = require('gulp-image-resize');
 var rename = require('gulp-rename');
-var inlineCss = require('gulp-inline-css');
+var replace = require('gulp-replace');
+var fs = require('fs');
+
 
 gulp.task('serve', function() {
 	browserSync({
 		port: portVal,
 		open: false,
 		server: {
-			baseDIr: 'build'
+			baseDir: 'build'
 		}
 	});
 });
 
 gulp.task('copy', function() {
-	gulp.src(['./**/*', '!node_modules', '!node_modules/**', '!gulpfile.js', '!LICENSE', '!package.json'])
+	gulp.src(['./**/*', '!index.html', '!node_modules', '!node_modules/**', '!gulpfile.js', '!LICENSE', '!package.json', '!build', '!build/**'])
 		.pipe(gulp.dest('build'));
 });
+
+gulp.task('inline-css', function() {
+	var regexp = new RegExp('<link href="css/style.css"[^>]*>', 'g');
+	gulp.src('index.html')
+		.pipe(replace(regexp, function(s) {
+			var style = fs.readFileSync('css/style.css', 'utf8');
+			return '<style>\n' + style + '\n</style>';
+		}))
+		.pipe(gulp.dest('build'));
+});
+
+
 
 gulp.task('ngrok-url', function(cb) {
 	return ngrok.connect(portVal, function(err, url) {
@@ -36,7 +50,7 @@ gulp.task('ngrok-url', function(cb) {
 
 gulp.task('psi-desktop', function(cb) {
 	console.log('Start Desktop PageSpeed Insight with ' + site);
-	psi.output(site, {
+	psi(site, {
 		nokey: 'true',
 		strategy: 'desktop',
 		threshold: 90
@@ -45,7 +59,7 @@ gulp.task('psi-desktop', function(cb) {
 
 gulp.task('psi-mobile', function(cb) {
 	console.log('Start Mobile PageSpeed Insight with ' + site);
-	psi.output(site, {
+	psi(site, {
 		nokey: 'true',
 		strategy: 'mobile',
 		threshold: 90
@@ -56,6 +70,7 @@ gulp.task('psi-seq', function(cb) {
 	return sequence(
 		'copy',
 		'images',
+		'inline-css',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -68,6 +83,7 @@ gulp.task('psi-desktop-seq', function(cb) {
 	return sequence(
 		'copy',
 		'images',
+		'inline-css',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -79,6 +95,7 @@ gulp.task('psi-mobile-seq', function(cb) {
 	return sequence(
 		'copy',
 		'images',
+		'inline-css',
 		'serve',
 		'ngrok-url',
 		'psi-mobile',

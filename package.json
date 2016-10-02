@@ -32,6 +32,7 @@
     "gulp-image-resize": "^0.10.0",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
+    "gulp-uglifycss": "^1.0.6",
     "ngrok": "^2.2.3",
     "psi": "^2.0.4",
     "run-sequence": "^1.2.2"

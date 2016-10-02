@@ -13,7 +13,7 @@ var replace = require('gulp-replace');
 var fs = require('fs');
 var clean = require('gulp-clean');
 var htmlmin = require('gulp-html-minifier');
-
+var uglifycss = require('gulp-uglifycss');
 
 gulp.task('serve', function() {
 	browserSync({
@@ -34,17 +34,26 @@ gulp.task('copy', function() {
 		.pipe(gulp.dest('build'));
 });
 
+gulp.task('minify-css', function() {
+	return gulp.src('css/style.css')
+		.pipe(uglifycss({
+			maxLineLen: 80,
+			uglyComments: true
+		}))
+		.pipe(gulp.dest('tmp'));
+});
+
 gulp.task('inline-css', function() {
 	var regexp = new RegExp('<link href="css/style.css"[^>]*>', 'g');
 	return gulp.src('index.html')
 		.pipe(replace(regexp, function(s) {
-			var style = fs.readFileSync('css/style.css', 'utf8');
+			var style = fs.readFileSync('tmp/style.css', 'utf8');
 			return '<style>\n' + style + '\n</style>';
 		}))
 		.pipe(gulp.dest('tmp'));
 });
 
-gulp.task('minify', function() {
+gulp.task('minify-html', function() {
 	return gulp.src('tmp/index.html')
 		.pipe(htmlmin({collapseWhitespace: true}))
 		.pipe(gulp.dest('build'));
@@ -81,8 +90,9 @@ gulp.task('psi-seq', function(cb) {
 		'clean',
 		'copy',
 		'images',
+		'minify-css',
 		'inline-css',
-		'minify',
+		'minify-html',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -96,8 +106,9 @@ gulp.task('psi-desktop-seq', function(cb) {
 		'clean',
 		'copy',
 		'images',
+		'minify-css',
 		'inline-css',
-		'minify',
+		'minify-html',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -110,8 +121,9 @@ gulp.task('psi-mobile-seq', function(cb) {
 		'clean',
 		'copy',
 		'images',
+		'minify-css',
 		'inline-css',
-		'minify',
+		'minify-html',
 		'serve',
 		'ngrok-url',
 		'psi-mobile',

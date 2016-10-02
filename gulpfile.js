@@ -12,6 +12,7 @@ var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var fs = require('fs');
 var clean = require('gulp-clean');
+var htmlmin = require('gulp-html-minifier');
 
 
 gulp.task('serve', function() {
@@ -25,25 +26,29 @@ gulp.task('serve', function() {
 });
 
 gulp.task('clean', function() {
-	return gulp.src('build', {read: false}).pipe(clean());
+	return gulp.src(['build', 'tmp'], {read: false}).pipe(clean());
 });
 
 gulp.task('copy', function() {
-	gulp.src(['./**/*', '!index.html', '!node_modules', '!node_modules/**', '!gulpfile.js', '!LICENSE', '!package.json', '!build', '!build/**'])
+	return gulp.src(['./**/*', '!index.html', '!node_modules', '!node_modules/**', '!gulpfile.js', '!LICENSE', '!package.json', '!build', '!build/**'])
 		.pipe(gulp.dest('build'));
 });
 
 gulp.task('inline-css', function() {
 	var regexp = new RegExp('<link href="css/style.css"[^>]*>', 'g');
-	gulp.src('index.html')
+	return gulp.src('index.html')
 		.pipe(replace(regexp, function(s) {
 			var style = fs.readFileSync('css/style.css', 'utf8');
 			return '<style>\n' + style + '\n</style>';
 		}))
-		.pipe(gulp.dest('build'));
+		.pipe(gulp.dest('tmp'));
 });
 
-
+gulp.task('minify', function() {
+	return gulp.src('tmp/index.html')
+		.pipe(htmlmin({collapseWhitespace: true}))
+		.pipe(gulp.dest('build'));
+});
 
 gulp.task('ngrok-url', function(cb) {
 	return ngrok.connect(portVal, function(err, url) {
@@ -77,6 +82,7 @@ gulp.task('psi-seq', function(cb) {
 		'copy',
 		'images',
 		'inline-css',
+		'minify',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -91,6 +97,7 @@ gulp.task('psi-desktop-seq', function(cb) {
 		'copy',
 		'images',
 		'inline-css',
+		'minify',
 		'serve',
 		'ngrok-url',
 		'psi-desktop',
@@ -104,6 +111,7 @@ gulp.task('psi-mobile-seq', function(cb) {
 		'copy',
 		'images',
 		'inline-css',
+		'minify',
 		'serve',
 		'ngrok-url',
 		'psi-mobile',

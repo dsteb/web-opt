@@ -4,44 +4,33 @@ The challenge is to optimize this online portfolio for speed! In particular, opt
 
 ### Getting started
 
+The project is accessible in [GitHub Pages](https://dsteb.github.io/web-opt/).
+You can check the PageSpeed Insights score using [this link](https://developers.google.com/speed/pagespeed/insights/?url=https://dsteb.github.io/web-opt/).
+
 #### Installation
+If you want to run everything locally, you need:
  
 ```bash
 apt-get install imagemagick
 git clone https://github.com/dsteb/web-opt
 cd web-opt
 npm install
+gulp
+
 ```
+The Gulp task do:
+ * Image optimization (resize and compress).
+ * Reduces the render critical path by inlining CSS.
+ * Minimizes CSS and HTML.
+ * Run the local server on port 8000.
+ * Run the ngrok to make the web project be accessible from the Internet (the URL is printed in the console).
+ * Run the PageSpeed Insights with mobile and desktop strategy.
+ * Provides the link to open PageSpeed Insights in a browser.
 
-####Part 1: Optimize PageSpeed Insights score for index.html
-
-Some useful tips to help you get started:
-
-1. Check out the repository
-1. To inspect the site on your phone, you can run a local server
-
-  ```bash
-  $> cd /path/to/your-project-folder
-  $> python -m SimpleHTTPServer 8080
-  ```
-
-1. Open a browser and visit localhost:8080
-1. Download and install [ngrok](https://ngrok.com/) to the top-level of your project directory to make your local server accessible remotely.
-
-  ``` bash
-  $> cd /path/to/your-project-folder
-  $> ./ngrok http 8080
-  ```
-
-1. Copy the public URL ngrok gives you and try running it through PageSpeed Insights! Optional: [More on integrating ngrok, Grunt and PageSpeed.](http://www.jamescryer.com/2014/06/12/grunt-pagespeed-and-ngrok-locally-testing/)
-
-Profile, optimize, measure... and then lather, rinse, and repeat. Good luck!
-
-####Part 2: Optimize Frames per Second in pizza.html
-
-To optimize views/pizza.html, you will need to modify views/js/main.js until your frames per second rate is 60 fps or higher. You will find instructive comments in main.js. 
-
-You might find the FPS Counter/HUD Display useful in Chrome developer tools described here: [Chrome Dev Tools tips-and-tricks](https://developer.chrome.com/devtools/docs/tips-and-tricks).
+#### Work done
+ * PageSpeed Insights score for index.html is optimized to over 90 points.
+ * Frames per Second in pizza.html are optimized to 60fps
+ * Junk and "force layouts/reflows" are removed from pizza.html
 
 ### Optimization Tips and Tricks
 * [Optimizing Performance](https://developers.google.com/web/fundamentals/performance/ "web performance")
@@ -54,9 +43,3 @@ You might find the FPS Counter/HUD Display useful in Chrome developer tools desc
 * <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer.html">Reduce the size of text</a>
 * <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/image-optimization.html">Optimize images</a>
 * <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching.html">HTTP caching</a>
-
-### Customization with Bootstrap
-The portfolio was built on Twitter's <a href="http://getbootstrap.com/">Bootstrap</a> framework. All custom styles are in `dist/css/portfolio.css` in the portfolio repo.
-
-* <a href="http://getbootstrap.com/css/">Bootstrap's CSS Classes</a>
-* <a href="http://getbootstrap.com/components/">Bootstrap's Components</a>

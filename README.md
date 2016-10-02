@@ -29,8 +29,9 @@ The Gulp task do:
 
 #### Work done
  * PageSpeed Insights score for index.html is optimized to over 90 points.
- * Frames per Second in pizza.html are optimized to 60fps
- * Junk and "force layouts/reflows" are removed from pizza.html
+ * Frames per Second in pizza.html are optimized to 60fps.
+ * Junk and "force layouts/reflows" are removed from pizza.html.
+ * Everything is automized using Gulp.
 
 ### Optimization Tips and Tricks
 * [Optimizing Performance](https://developers.google.com/web/fundamentals/performance/ "web performance")

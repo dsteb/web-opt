@@ -30,6 +30,7 @@
     "gulp-exit": "0.0.2",
     "gulp-html-minifier": "^0.1.8",
     "gulp-image-resize": "^0.10.0",
+    "gulp-imagemin": "^3.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "gulp-uglifycss": "^1.0.6",

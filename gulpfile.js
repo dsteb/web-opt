@@ -14,6 +14,7 @@ var fs = require('fs');
 var clean = require('gulp-clean');
 var htmlmin = require('gulp-html-minifier');
 var uglifycss = require('gulp-uglifycss');
+var imagemin = require('gulp-imagemin');
 
 gulp.task('serve', function() {
 	browserSync({
@@ -30,7 +31,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('copy', function() {
-	return gulp.src(['./**/*', '!index.html', '!node_modules', '!node_modules/**', '!gulpfile.js', '!LICENSE', '!package.json', '!build', '!build/**'])
+	return gulp.src(['./**/*', '!README.md', '!index.html', '!node_modules', '!node_modules/**', '!gulpfile.js', '!LICENSE', '!package.json', '!build', '!build/**'])
 		.pipe(gulp.dest('build'));
 });
 
@@ -69,7 +70,9 @@ gulp.task('ngrok-url', function(cb) {
 
 gulp.task('psi-desktop', function(cb) {
 	console.log('Start Desktop PageSpeed Insight with ' + site);
-	psi(site, {
+	var link = 'https://developers.google.com/speed/pagespeed/insights/?url=' + site
+	console.log('PageSpeed Insight link: ' + link);
+	return psi.output(site, {
 		nokey: 'true',
 		strategy: 'desktop',
 		threshold: 90
@@ -78,11 +81,18 @@ gulp.task('psi-desktop', function(cb) {
 
 gulp.task('psi-mobile', function(cb) {
 	console.log('Start Mobile PageSpeed Insight with ' + site);
-	psi(site, {
+	var link = 'https://developers.google.com/speed/pagespeed/insights/?url=' + site
+	console.log('PageSpeed Insight link: ' + link);
+	return psi.output(site, {
 		nokey: 'true',
 		strategy: 'mobile',
 		threshold: 90
 	}, cb);
+});
+
+gulp.task('psi', ['psi-desktop', 'psi-mobile'], function(cb) {
+	var link = 'https://developers.google.com/speed/pagespeed/insights/?url=' + site
+	console.log('PageSpeed Insight link: ' + link);
 });
 
 gulp.task('psi-seq', function(cb) {
@@ -95,57 +105,27 @@ gulp.task('psi-seq', function(cb) {
 		'minify-html',
 		'serve',
 		'ngrok-url',
-		'psi-desktop',
-		'psi-mobile',
+		'psi',
 		cb
 	);
 });
-
-gulp.task('psi-desktop-seq', function(cb) {
-	return sequence(
-		'clean',
-		'copy',
-		'images',
-		'minify-css',
-		'inline-css',
-		'minify-html',
-		'serve',
-		'ngrok-url',
-		'psi-desktop',
-		cb
-	);
-});
-
-gulp.task('psi-mobile-seq', function(cb) {
-	return sequence(
-		'clean',
-		'copy',
-		'images',
-		'minify-css',
-		'inline-css',
-		'minify-html',
-		'serve',
-		'ngrok-url',
-		'psi-mobile',
-		cb
-	);
-});
-
 
 gulp.task('images', function() {
 	return [
-		gulp.src('/img/profilepic.jpg')
+		gulp.src('img/profilepic.jpg')
 		.pipe(imageResize({
 			quality: 0.7,
 			imageMagick: true
 		}))
-		.pipe(gulp.dest('build/img/')),
+		.pipe(imagemin())
+		.pipe(gulp.dest('build/img')),
 
 		gulp.src('views/images/pizzeria.jpg')
 			.pipe(imageResize({
 				quality: 0.7,
 				imageMagick: true
 			}))
+			.pipe(imagemin())
 			.pipe(gulp.dest('build/views/images')),
 
 		gulp.src('views/images/pizzeria.jpg')
@@ -155,16 +135,9 @@ gulp.task('images', function() {
 				imageMagick: true
 			}))
 			.pipe(rename(function(path) { path.basename += '-100w'}))
+			.pipe(imagemin())
 			.pipe(gulp.dest('build/views/images'))
 	];
-});
-
-gulp.task('desktop', ['psi-desktop-seq'], function() {
-	process.exit();
-});
-
-gulp.task('mobile', ['psi-mobile-seq'], function() {
-	process.exit();
 });
 
 gulp.task('default', ['psi-seq'], function() {
